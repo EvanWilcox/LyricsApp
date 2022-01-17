@@ -167,7 +167,8 @@ const Content = styled.div`
 `;
 
 const Footer = styled.div`
-  width: calc(100% - 100px);
+  height: 50px;
+  width: calc(100%);
   margin: 0px auto;
   position: absolute;
   bottom: 0;
@@ -199,7 +200,7 @@ const Lyrics = styled.div`
 `;
 
 const Page = styled.div`
-  min-height: calc(100vh);
+  min-height: calc(100vh - 50px);
   max-width: 100%;
   position: relative;
   padding: 50px 50px 0px 50px;
