@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import "./App.css";
-import styled from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import SpotifyWebApi from "spotify-web-api-js";
+
+import ToggleSwitch from "./components/ToggleSwitch";
+import Panel from "./components/Panel";
+import SongTitleCard from "./components/SongTitleCard";
+
+import { darkTheme, lightTheme } from "./Themes";
 
 // Declare a new SpotifyWebApi object
 const spotifyApi = new SpotifyWebApi();
@@ -25,6 +31,7 @@ export default class App extends Component {
         loggedIn: true,
         nowPlaying: { name: "", artists: [], albumArt: "" },
         lyrics: "",
+        theme: window.localStorage.getItem("theme") || "light",
       };
 
       // Start refresh timer to get the currently playing song.
@@ -106,52 +113,50 @@ export default class App extends Component {
       });
   }
 
+  themeToggle = () => {
+    this.setState({ theme: this.state.theme === "light" ? "dark" : "light" }, () => {
+      window.localStorage.setItem("theme", this.state.theme);
+    });
+  };
+
   render() {
-    const { loggedIn, nowPlaying, lyrics } = this.state;
-    const { name, artists, albumArt } = nowPlaying;
+    const { loggedIn, nowPlaying, lyrics, theme } = this.state;
+    //const { name, artists, albumArt } = nowPlaying;
 
     if (!loggedIn) {
       // Redirect to Spotify Login page.
       window.location.href = "/login";
     } else {
       return (
-        <Page>
-          <Content>
-            <Song>
-              {name && artists && albumArt && (
-                <>
-                  <Title>{name}</Title>
-                  <Artists>{artists.join(", ")}</Artists>
-                  <AlbumArt src={albumArt} alt="" />
-                </>
-              )}
-            </Song>
-            <Lyrics>
-              {lyrics.split(/\r?\n/).map((lyric, index) => {
-                return lyric === "" ? <br key={index} /> : <Lyric key={index}>{lyric}</Lyric>;
-              })}
-            </Lyrics>
-          </Content>
-          <Footer>
-            <Link href="https://evanwilcox.com">Evan Wilcox</Link>
-          </Footer>
-        </Page>
+        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+          <Page>
+            <Content>
+              <div>
+                {nowPlaying.name && nowPlaying.artists && nowPlaying.albumArt && (
+                  <SongTitleCard nowPlaying={nowPlaying} />
+                )}
+
+                <ToggleSwitch name="ThemeToggle" checked={theme === "dark"} onChange={this.themeToggle} />
+              </div>
+              <Panel>
+                <Lyrics>
+                  {lyrics.split(/\r?\n/).map((lyric, index) => {
+                    return lyric === "" ? <br key={index} /> : <Lyric key={index}>{lyric}</Lyric>;
+                  })}
+                </Lyrics>
+              </Panel>
+            </Content>
+            <Footer>
+              <Link href="https://evanwilcox.com">Evan Wilcox</Link>
+            </Footer>
+          </Page>
+        </ThemeProvider>
       );
     }
   }
 }
 
-const AlbumArt = styled.img`
-  height: 400px;
-  width: 400px;
-  margin: 25px 0px 50px 0px;
-`;
-
-const Artists = styled.p`
-  font-size: 30px;
-  margin: 0px;
-`;
-
+// Styled Components
 const Content = styled.div`
   width: "100%";
   display: flex;
@@ -172,7 +177,7 @@ const Footer = styled.div`
 
 const Link = styled.a`
   text-decoration: none;
-  color: black;
+  color: ${(props) => props.theme.text};
 
   &::visited {
     color: black;
@@ -185,6 +190,7 @@ const Link = styled.a`
 const Lyric = styled.p`
   font-size: 25px;
   margin: 0px;
+  color: ${(props) => props.theme.text};
 `;
 
 const Lyrics = styled.div`
@@ -193,20 +199,10 @@ const Lyrics = styled.div`
 `;
 
 const Page = styled.div`
-  min-height: calc(100vh - 100px);
+  min-height: calc(100vh);
   max-width: 100%;
   position: relative;
   padding: 50px 50px 0px 50px;
   overflow-x: hidden;
-`;
-
-const Song = styled.div`
-  min-width: 400px;
-  max-width: 600px;
-`;
-
-const Title = styled.p`
-  font-size: 50px;
-  overflow-wrap: break-word;
-  margin: 0px;
+  background: ${(props) => props.theme.background};
 `;
