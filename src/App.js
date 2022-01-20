@@ -3,9 +3,10 @@ import "./App.css";
 import styled, { ThemeProvider } from "styled-components";
 import SpotifyWebApi from "spotify-web-api-js";
 
-import ToggleSwitch from "./components/ToggleSwitch";
-import Panel from "./components/Panel";
+import Lyrics from "./components/Lyrics";
+import MediaController from "./components/SpotifyController";
 import SongTitleCard from "./components/SongTitleCard";
+import ThemeChanger from "./components/ThemeChanger";
 
 import { darkTheme, lightTheme } from "./Themes";
 
@@ -132,19 +133,13 @@ export default class App extends Component {
           <Page>
             <Content>
               <div>
-                {nowPlaying.name && nowPlaying.artists && nowPlaying.albumArt && (
-                  <SongTitleCard nowPlaying={nowPlaying} />
-                )}
-
-                <ToggleSwitch name="ThemeToggle" checked={theme === "dark"} onChange={this.themeToggle} />
+                <ThemeChanger theme={theme} themeToggle={this.themeToggle} />
+                <MediaController spotifyApi={spotifyApi} />
+                <SongTitleCard nowPlaying={nowPlaying} />
               </div>
-              <Panel>
-                <Lyrics>
-                  {lyrics.split(/\r?\n/).map((lyric, index) => {
-                    return lyric === "" ? <br key={index} /> : <Lyric key={index}>{lyric}</Lyric>;
-                  })}
-                </Lyrics>
-              </Panel>
+              <div>
+                <Lyrics lyrics={lyrics} />
+              </div>
             </Content>
             <Footer>
               <Link href="https://evanwilcox.com">Evan Wilcox</Link>
@@ -158,27 +153,27 @@ export default class App extends Component {
 
 // Styled Components
 const Content = styled.div`
-  width: "100%";
-  display: flex;
-  flex-direction: row-reverse;
-  flex-wrap: wrap;
-  justify-content: space-around;
   padding-bottom: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  column-gap: 30px;
 `;
 
 const Footer = styled.div`
-  height: 50px;
-  width: calc(100%);
-  margin: 0px auto;
+  height: 85px;
+  width: calc(100% - 30px);
+  margin: 0px;
   position: absolute;
   bottom: 0;
   text-align: center;
-  padding-bottom: 30px;
 `;
 
 const Link = styled.a`
   text-decoration: none;
   color: ${(props) => props.theme.text};
+  margin: 0px;
 
   &::visited {
     color: black;
@@ -188,22 +183,11 @@ const Link = styled.a`
   }
 `;
 
-const Lyric = styled.p`
-  font-size: 25px;
-  margin: 0px;
-  color: ${(props) => props.theme.text};
-`;
-
-const Lyrics = styled.div`
-  min-width: 500px;
-  max-width: 700px;
-`;
-
 const Page = styled.div`
-  min-height: calc(100vh - 50px);
-  max-width: 100%;
+  min-height: calc(100vh - 15px);
+  min-width: calc(100vw - 50px);
   position: relative;
-  padding: 50px 50px 0px 50px;
+  padding: 15px 15px 0px 15px;
   overflow-x: hidden;
   background: ${(props) => props.theme.background};
 `;

@@ -7,15 +7,15 @@ const SongTitleCard = (props) => {
   const { name, artists, albumArt } = props.nowPlaying;
 
   return (
-    <Panel>
-      <Song>
-        <>
-          <Title>{name}</Title>
-          <Artists>{artists.join(", ")}</Artists>
-          <AlbumArt src={albumArt} alt="" />
-        </>
-      </Song>
-    </Panel>
+    name &&
+    artists &&
+    albumArt && (
+      <Panel>
+        <Title>{name}</Title>
+        <Artists>{artists.join(", ")}</Artists>
+        <AlbumArt src={albumArt} alt="" />
+      </Panel>
+    )
   );
 };
 
@@ -24,8 +24,10 @@ SongTitleCard.propTypes = {
 };
 
 const AlbumArt = styled.img`
-  height: 400px;
-  width: 400px;
+  height: 100%;
+  width: 100%;
+  max-height: 400px;
+  max-width: 400px;
   display: block;
   margin-top: 20px;
   margin-left: auto;
@@ -33,18 +35,13 @@ const AlbumArt = styled.img`
 `;
 
 const Artists = styled.p`
-  font-size: 30px;
+  font-size: 20px;
   margin: 0px;
   color: ${(props) => props.theme.text};
 `;
 
-const Song = styled.div`
-  min-width: 400px;
-  max-width: 600px;
-`;
-
 const Title = styled.p`
-  font-size: 50px;
+  font-size: 30px;
   overflow-wrap: break-word;
   margin: 0px;
   color: ${(props) => props.theme.text};

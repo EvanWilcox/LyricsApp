@@ -4,12 +4,10 @@ import PropTypes from "prop-types";
 
 const ToggleSwitch = (props) => {
   return (
-    <div>
-      <Wrapper>
-        <CheckBox id={props.name} type="checkbox" checked={props.checked} onChange={props.onChange} />
-        <Label htmlFor={props.name} />
-      </Wrapper>
-    </div>
+    <Wrapper>
+      <CheckBox id={props.name} type="checkbox" checked={props.checked} onChange={props.onChange} />
+      <Label htmlFor={props.name} />
+    </Wrapper>
   );
 };
 
@@ -21,6 +19,7 @@ ToggleSwitch.propTypes = {
 
 const Wrapper = styled.div`
   position: relative;
+  display: inline;
 `;
 
 const Label = styled.label`
